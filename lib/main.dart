@@ -1,3 +1,4 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:latihan_sqflite/create.dart';
 import 'package:latihan_sqflite/database_instance.dart';
@@ -76,18 +77,55 @@ class _HomePageState extends State<HomePage> {
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
                         return ListTile(
-                          title: Text(snapshot.data![index].name ?? ""),
-                          subtitle: Text(snapshot.data![index].category ?? ""),
-                          trailing: IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => UpdateScreen(productModel: snapshot.data![index]),
-                                    )).then((value) => setState(() {}));
-                              },
-                              icon: Icon(Icons.edit)),
-                        );
+                            title: Text(snapshot.data![index].name ?? ""),
+                            subtitle:
+                                Text(snapshot.data![index].category ?? ""),
+                            trailing: Wrap(
+                              spacing: -19,
+                              children: [
+                                IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => UpdateScreen(
+                                                productModel:
+                                                    snapshot.data![index]),
+                                          )).then((value) => setState(() {}));
+                                    },
+                                    icon: Icon(Icons.edit)),
+                                IconButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text("DELETE"),
+                                            content: Text(
+                                                "Hapus data ${snapshot.data![index].name} ???"),
+                                            actions: [
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    return setState(() {
+                                                      Navigator.pop(context);
+                                                      databaseInstance!.delete(
+                                                          snapshot
+                                                              .data![index].id!
+                                                              .toInt());
+                                                    });
+                                                  },
+                                                  child: Text("Oke"))
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    )),
+                              ],
+                            ));
                       },
                     );
                   } else {
