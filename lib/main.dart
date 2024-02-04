@@ -26,18 +26,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  DatabaseInstance databaseInstance = DatabaseInstance();
+  DatabaseInstance? databaseInstance;
 
-  Future _refresh () async{
-    setState(() {
-      
-    });
+  Future _refresh() async {
+    setState(() {});
+  }
+
+  Future initDatabase() async {
+    await databaseInstance!.database();
+    setState(() {});
   }
 
   @override
   void initState() {
     // TODO: implement initState
-    databaseInstance.database();
+    databaseInstance = DatabaseInstance();
+    initDatabase();
     super.initState();
   }
 
@@ -47,30 +51,49 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("SQFLITE"),
         actions: [
-          IconButton(onPressed:  () => Navigator.push(context, MaterialPageRoute(builder: (context) => CreateScreen(),)), icon: Icon(Icons.add))
+          IconButton(
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CreateScreen(),
+                  )).then((value) => setState(() {})),
+              icon: Icon(Icons.add))
         ],
       ),
       body: RefreshIndicator(
         onRefresh: _refresh,
-        child: FutureBuilder<List<ProductModel>>(
-          future: databaseInstance.all(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(snapshot.data![index].name ?? ""),
-                  );
+        child: databaseInstance != null
+            ? FutureBuilder<List<ProductModel>>(
+                future: databaseInstance!.all(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data == 0)
+                      return Center(
+                        child: Text("Data masih kosong!"),
+                      );
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(snapshot.data![index].name ?? ""),
+                          subtitle: Text(snapshot.data![index].category ?? ""),
+                        );
+                      },
+                    );
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.amber,
+                      ),
+                    );
+                  }
                 },
-              );
-            }else{
-                return Center(
-                  child: Text("Data masih kosong!"),);
-            }
-          },
-        ),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  color: Colors.amber,
+                ),
+              ),
       ),
     );
   }

@@ -24,7 +24,9 @@ class _CreateScreenState extends State<CreateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("CREATE"),),
+      appBar: AppBar(
+        title: Text("CREATE"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -34,26 +36,27 @@ class _CreateScreenState extends State<CreateScreen> {
             TextField(
               controller: nameC,
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Text("Category"),
             TextField(
               controller: categoryC,
             ),
-            SizedBox(height: 20,),
-            ElevatedButton(onPressed: () async{
-              await databaseInstance.insert(
-                {
-                  'name': nameC.text,
-                  'category': categoryC.text,
-                  'created_at': DateTime.now().toString(),
-                  'update_at': DateTime.now().toString(),
-                }
-              );
-              Navigator.pop(context);
-              setState(() {
-                
-              });
-            }, child: Text("SUBMIT"))
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+                onPressed: () async {
+                  await databaseInstance.insert({
+                    'name': nameC.text,
+                    'category': categoryC.text,
+                    'created_at': DateTime.now().toString(),
+                    'update_at': DateTime.now().toString(),
+                  });
+                  Navigator.pop(context);
+                },
+                child: Text("SUBMIT"))
           ],
         ),
       ),
