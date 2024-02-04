@@ -46,4 +46,9 @@ class DatabaseInstance {
     final query = await _database!.insert(table, row);
     return query;
   }
+
+  Future<int> update(int idParam, Map<String, dynamic> row) async{
+    final query = await _database!.update(table, row, where: '$id = ?', whereArgs: [idParam]);
+    return query;
+  }
 }

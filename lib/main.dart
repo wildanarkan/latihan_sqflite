@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:latihan_sqflite/create.dart';
 import 'package:latihan_sqflite/database_instance.dart';
 import 'package:latihan_sqflite/product_model.dart';
+import 'package:latihan_sqflite/update.dart';
 
 void main() {
   runApp(MyApp());
@@ -77,6 +78,15 @@ class _HomePageState extends State<HomePage> {
                         return ListTile(
                           title: Text(snapshot.data![index].name ?? ""),
                           subtitle: Text(snapshot.data![index].category ?? ""),
+                          trailing: IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UpdateScreen(productModel: snapshot.data![index]),
+                                    )).then((value) => setState(() {}));
+                              },
+                              icon: Icon(Icons.edit)),
                         );
                       },
                     );
